@@ -1,0 +1,21 @@
+// ---- backend/models/index.js ----
+const { Sequelize } = require('sequelize');
+
+// Set up the connection to a local SQLite database file
+const sequelize = new Sequelize({
+    dialect: 'sqlite',
+    storage: './giveaway.sqlite' // This file will be created in the backend folder
+});
+
+const db = {};
+db.Sequelize = Sequelize;
+db.sequelize = sequelize;
+
+db.User = require('./userModel')(sequelize, Sequelize);
+db.Campaign = require('./campaignModel')(sequelize, Sequelize);
+
+db.User.hasMany(db.Campaign, { as: 'campaigns' });
+db.Campaign.belongsTo(db.User, {
+    foreignKey: 'userId',
+    as: 'giver'
+});
